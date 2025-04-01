@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { 
   FileText, 
   Languages, 
-  FileHandwritten, 
+  FileImage, 
   PenTool, 
   Volume2, 
   Mic, 
@@ -53,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({ activeFeature, setActiveFeature }) => {
     {
       id: "ocr",
       name: "OCR",
-      icon: <FileHandwritten className="h-5 w-5" />,
+      icon: <FileImage className="h-5 w-5" />,
       description: "Convert handwritten images to text"
     },
     {

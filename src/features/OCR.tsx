@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Copy, FileHandwritten, Upload } from "lucide-react";
+import { Copy, FileImage, Upload } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import LoadingIndicator from "@/components/LoadingIndicator";
 import AzureService from "@/services/AzureService";
@@ -64,7 +64,7 @@ const OCR = () => {
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="flex items-center">
-            <FileHandwritten className="mr-2 h-5 w-5 text-azure-500" />
+            <FileImage className="mr-2 h-5 w-5 text-azure-500" />
             Image Upload
           </CardTitle>
           <CardDescription>
@@ -122,7 +122,7 @@ const OCR = () => {
       <Card className="w-full">
         <CardHeader>
           <CardTitle className="flex items-center">
-            <FileHandwritten className="mr-2 h-5 w-5 text-azure-500" />
+            <FileImage className="mr-2 h-5 w-5 text-azure-500" />
             Extracted Text
           </CardTitle>
           <CardDescription>
