@@ -62,6 +62,8 @@ class AzureService {
   // Text translation service
   async translateText(text: string, targetLanguage: string): Promise<TranslationResponse> {
     try {
+      console.log('Translation request parameters:', { text, targetLanguage });
+      
       const response = await fetch(`${API_BASE_URL}/translate`, {
         method: 'POST',
         headers: {
@@ -70,13 +72,19 @@ class AzureService {
         body: JSON.stringify({ text, targetLanguage }),
       });
 
+      console.log('Translation API response status:', response.status);
+      
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Failed to translate text');
+        const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+        console.error('Translation API error:', errorData);
+        throw new Error(errorData.message || `Failed to translate text: ${response.status}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+      console.log('Translation API result:', result);
+      return result;
     } catch (error) {
+      console.error('Translation service error:', error);
       toast({
         title: "Translation failed",
         description: error instanceof Error ? error.message : "An unknown error occurred",

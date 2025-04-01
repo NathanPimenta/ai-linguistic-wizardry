@@ -1,4 +1,3 @@
-
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -18,7 +17,7 @@ const PORT = process.env.PORT || 3000;
 
 // Configure CORS to allow requests from your frontend
 app.use(cors({
-  origin: 'http://localhost:8080'
+  origin: '*' // Allow all origins during development
 }));
 
 // Middleware for parsing JSON
@@ -95,6 +94,8 @@ app.post('/api/translate', async (req, res) => {
   try {
     const { text, targetLanguage } = req.body;
     
+    console.log('Translation request received:', { text, targetLanguage });
+    
     // Validate input
     if (!text) {
       return res.status(400).json({ message: 'Text is required' });
@@ -107,23 +108,38 @@ app.post('/api/translate', async (req, res) => {
     // Use Azure Translator service
     const subscriptionKey = process.env.AZURE_TRANSLATOR_KEY;
     const endpoint = process.env.AZURE_TRANSLATOR_ENDPOINT || 'https://api.cognitive.microsofttranslator.com';
+    const region = process.env.AZURE_TRANSLATOR_REGION || 'centralindia';
+
+    console.log('Using Azure Translator:', { 
+      endpoint, 
+      region,
+      keyAvailable: !!subscriptionKey
+    });
 
     const response = await fetch(`${endpoint}/translate?api-version=3.0&to=${targetLanguage}`, {
       method: 'POST',
       headers: {
         'Ocp-Apim-Subscription-Key': subscriptionKey,
-        'Ocp-Apim-Subscription-Region': process.env.AZURE_TRANSLATOR_REGION || 'global',
+        'Ocp-Apim-Subscription-Region': region,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify([{ text }])
     });
 
-    const data = await response.json();
+    console.log('Azure Translator API response status:', response.status);
     
     if (!response.ok) {
-      throw new Error(data.error?.message || 'Translation failed');
+      const errorData = await response.json().catch(() => ({}));
+      console.error('Azure Translator API error:', errorData);
+      return res.status(response.status).json({ 
+        message: 'Translation failed', 
+        error: errorData.error?.message || `Status: ${response.status}`
+      });
     }
 
+    const data = await response.json();
+    console.log('Azure Translator API result:', data);
+    
     const translatedText = data[0].translations[0].text;
     const detectedLanguage = data[0].detectedLanguage?.language;
 
