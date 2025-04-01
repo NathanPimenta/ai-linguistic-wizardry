@@ -2,7 +2,7 @@
 import { toast } from "@/components/ui/use-toast";
 
 // Define endpoints for Azure API services
-const API_BASE_URL = 'http://localhost:3000/api'; // This will connect to our Express backend
+const API_BASE_URL = 'https://ai-linguistic-wizardry.lovable.app/api'; // This will connect to our Express backend
 
 // API response type definitions
 export interface TranslationResponse {
