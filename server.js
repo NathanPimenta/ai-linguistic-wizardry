@@ -1,9 +1,9 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+require('dotenv').config();
 
 // Azure SDK imports
 const { TextAnalyticsClient, AzureKeyCredential } = require('@azure/ai-text-analytics');
@@ -91,6 +91,7 @@ app.post('/api/summarize', async (req, res) => {
 
 // Text Translation endpoint
 app.post('/api/translate', async (req, res) => {
+  console.log('Translation request received:', req.body);
   try {
     const { text, targetLanguage } = req.body;
     
