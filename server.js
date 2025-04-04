@@ -31,7 +31,7 @@ const storage = multer.diskStorage({
       fs.mkdirSync(dir, { recursive: true });
     }
     cb(null, dir);
-  },
+  }, 
   filename: (req, file, cb) => {
     cb(null, Date.now() + path.extname(file.originalname));
   }
@@ -78,7 +78,13 @@ app.post('/api/summarize', async (req, res) => {
     const results = await textAnalyticsClient.beginAnalyzeBatch(documents, actions);
     const resultData = await results.pollUntilDone();
     
-    const summary = resultData.extractiveSummarizeResults[0].documents[0].sentences
+// Safely access the response structure
+    const summarizeResults = resultData.extractiveSummarizeResults?.[0];
+    if (!summarizeResults || !summarizeResults.documents?.[0]?.sentences) {
+      return res.status(500).json({ message: 'Failed to retrieve summarization results' });
+    }
+
+    const summary = summarizeResults.documents[0].sentences
       .map(sentence => sentence.text)
       .join(' ');
 
@@ -288,6 +294,9 @@ app.post('/api/text-to-speech', async (req, res) => {
 });
 
 // Speech to Text endpoint
+app.get('/api/speech-to-text'),async(req,res)=>{
+  res.send("hello world");
+}
 app.post('/api/speech-to-text', upload.single('audio'), async (req, res) => {
   try {
     if (!req.file) {
